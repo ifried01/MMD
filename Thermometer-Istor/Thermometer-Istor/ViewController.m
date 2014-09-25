@@ -22,6 +22,13 @@
 
 @implementation ViewController
 
+/* ========== 'Attending to patient' button ========== */
+- (IBAction) buttonPress: (UIButton *) sender {
+    if (self.attendingPatient.hidden == false){
+        self.attendingPatient.hidden = true;
+    }
+}
+
 bool alarmPlaying    = false; // used to play alarm sound
 bool alarmHasSounded = false; // used to reset alarm once temperature goes below threshold
 
@@ -66,6 +73,8 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
         self.view.backgroundColor = [UIColor colorWithRed:(colors[0]) green:(colors[1]) blue:(colors[2]) alpha:1];
         [self.backgroundTimer invalidate];
         self.backgroundTimer = NULL;
+        // display the attending patient button
+        self.attendingPatient.hidden = false;
     }
     else if (alertView.tag == 1){
         if (buttonIndex == 0){
@@ -194,11 +203,10 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
 
 /* ========== The MAIN loop of the program, this function is called every second from viewDidLoad ========== */
 - (void) updateProgram: (NSTimer *) timer {
-//    NSDictionary *dict = [self parseJSONFromHTTP];
-//    NSDictionary *dict = @{@"currentTemp":@30.0, @"avg1Temp":@68.0, @"avg10Temp" :@78.0,};
+    NSDictionary *dict = [self parseJSONFromHTTP];
     // parse temperatures out of the data dictionary and render to screen
-//    [self getTemperatures:dict];
-    if ([self tempIsAboveThreshold] && !alarmHasSounded) {
+    [self getTemperatures:dict];
+    if ([self tempIsAboveThreshold] && !alarmHasSounded && self.attendingPatient.hidden == true) {
         [self displayAlarm: @"High Patient Temperature"];
         [self soundAlarm];
         [self flashScreen];
@@ -207,6 +215,7 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
         [self resetAlarm];
     }
     /* for testing purposes ... */
+    /*
     if ([self.CurrentT.text floatValue] > 92.0){
         while ([self.CurrentT.text floatValue] > 88.0) {
             self.CurrentT.text = [NSString stringWithFormat:@"%0.01f", ([self.CurrentT.text floatValue] - 1)];
@@ -217,7 +226,7 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
     }
     else {
         self.CurrentT.text = [NSString stringWithFormat:@"%0.01f", ([self.CurrentT.text floatValue] + 1)];
-    }
+    }*/
 }
 
 - (void)viewDidLoad

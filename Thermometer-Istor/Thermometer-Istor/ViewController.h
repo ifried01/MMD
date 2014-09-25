@@ -13,4 +13,7 @@
 @interface ViewController : UIViewController{
     AVAudioPlayer *alarmNoise;
 }
+
+@property (strong, nonatomic) IBOutlet UIButton *attendingPatient;
+
 @end

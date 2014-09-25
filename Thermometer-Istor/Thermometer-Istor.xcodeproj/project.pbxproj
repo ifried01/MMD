@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BCBDEF4619D48EAC005021A6 /* soundImage.png in Resources */ = {isa = PBXBuildFile; fileRef = BCBDEF4519D48EAC005021A6 /* soundImage.png */; };
+		BCBDEF4819D48EB1005021A6 /* muteImage.png in Resources */ = {isa = PBXBuildFile; fileRef = BCBDEF4719D48EB1005021A6 /* muteImage.png */; };
 		BCD1E70D19D336EA003E7092 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCD1E70C19D336EA003E7092 /* Foundation.framework */; };
 		BCD1E70F19D336EA003E7092 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCD1E70E19D336EA003E7092 /* CoreGraphics.framework */; };
 		BCD1E71119D336EA003E7092 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCD1E71019D336EA003E7092 /* UIKit.framework */; };
@@ -37,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BCBDEF4519D48EAC005021A6 /* soundImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = soundImage.png; sourceTree = "<group>"; };
+		BCBDEF4719D48EB1005021A6 /* muteImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = muteImage.png; sourceTree = "<group>"; };
 		BCD1E70919D336EA003E7092 /* Thermometer-Istor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Thermometer-Istor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCD1E70C19D336EA003E7092 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BCD1E70E19D336EA003E7092 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -135,6 +139,8 @@
 		BCD1E71319D336EB003E7092 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BCBDEF4719D48EB1005021A6 /* muteImage.png */,
+				BCBDEF4519D48EAC005021A6 /* soundImage.png */,
 				BCD1E74619D33A38003E7092 /* iphone_alarm.mp3 */,
 				BCD1E71419D336EB003E7092 /* Thermometer-Istor-Info.plist */,
 				BCD1E71519D336EB003E7092 /* InfoPlist.strings */,
@@ -240,9 +246,11 @@
 			files = (
 				BCD1E72319D336EB003E7092 /* Main_iPad.storyboard in Resources */,
 				BCD1E72819D336EB003E7092 /* Images.xcassets in Resources */,
+				BCBDEF4819D48EB1005021A6 /* muteImage.png in Resources */,
 				BCD1E74719D33A38003E7092 /* iphone_alarm.mp3 in Resources */,
 				BCD1E72019D336EB003E7092 /* Main_iPhone.storyboard in Resources */,
 				BCD1E71719D336EB003E7092 /* InfoPlist.strings in Resources */,
+				BCBDEF4619D48EAC005021A6 /* soundImage.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,6 +486,7 @@
 				BCD1E74019D336EB003E7092 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BCD1E74119D336EB003E7092 /* Build configuration list for PBXNativeTarget "Thermometer-IstorTests" */ = {
 			isa = XCConfigurationList;
@@ -486,6 +495,7 @@
 				BCD1E74319D336EB003E7092 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
