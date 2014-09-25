@@ -72,7 +72,7 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
         // dismiss the WiFi connection alert
         }
         else if (buttonIndex == 1) {
-        // try to reconnect the WiFi
+         // try to reconnect the WiFi
         }
     }
 }
