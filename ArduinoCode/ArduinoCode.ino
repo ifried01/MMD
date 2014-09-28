@@ -62,6 +62,10 @@ void setup() {
   server.begin();
   // you're connected now, so print out the status:
   printWifiStatus();
+
+  //Initialize analog reference value to 1.1v for higher
+  //resolution and better temp range. 
+  analogReference(INTERNAL1V1);
 }
 
 
@@ -74,7 +78,7 @@ void loop() {
 
   // check if we have a client waiting
   handleClient();
-  
+
   getTemp();
   counter++;
   delay(8);  
@@ -84,7 +88,7 @@ void loop() {
 void getTemp() {
   // Grab analog reading from thermistor
   currTemp = convertToTemp( analogRead( A0 ) ); 
-  
+
   // Set these averages before we have enough readings
   if( !avg1sTemp ) {
     avg1sTemp = currTemp;
@@ -98,7 +102,7 @@ void getTemp() {
 
 // Convert 0 to 1023 to a degrees Celcius
 float convertToTemp( int reading ) {
-   return reading/10 - 8; 
+  return (((float)reading*1.1) / 1024)*100; 
 }
 
 // Calculate our average temperature
@@ -143,23 +147,24 @@ void handleClient() {
         // so you can send a reply
         if (c == '\n' && currentLineIsBlank) {
           // send a standard http response header
-          client.println("HTTP/1.1 200 OK");
-          client.println("Content-Type: application/json;charset=utf-8");
-          client.println("Connection: close");  // the connection will be closed after completion of the response
-          client.println();
-          client.print("{");
-          client.print("\"currentTemp\":\"");
-          client.print(currTemp);
-          client.print("\",");
-          client.print("\"avg10Temp\":\"");
-          client.print(avg10sTemp);
-          client.print("\",");
-          client.print("\"avg1Temp\":\"");
-          client.print(avg1sTemp);
-          client.print("\"");
-          client.print("}");
-          client.println();
-          break;
+           client.println("HTTP/1.1 200 OK");
+           client.println("Content-Type: application/json;charset=utf-8");
+           client.println("Connection: close");  // the connection will be closed after completion of the response
+           client.println();
+           client.print("{");
+           client.print("\"currentTemp\":\"");
+           client.print(currTemp);
+           client.print("\",");
+           client.print("\"avg10Temp\":\"");
+           client.print(avg10sTemp);
+           client.print("\",");
+           client.print("\"avg1Temp\":\"");
+           client.print(avg1sTemp);
+           client.print("\"");
+           client.print("}");
+           client.println();
+           break;
+
         }
         if (c == '\n') {
           // you're starting a new line
