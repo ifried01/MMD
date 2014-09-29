@@ -58,7 +58,7 @@ void setup() {
     status = WiFi.begin(ssid);
 
     // wait 10 seconds for connection:
-    //    delay(10000);
+    delay(10000);
   } 
   server.begin();
   // you're connected now, so print out the status:
