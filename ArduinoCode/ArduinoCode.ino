@@ -17,6 +17,7 @@ float currTemp = 0;
 float avg1sTemp = 0;
 float avg10sTemp = 0;
 int counter = 0;
+int tenReached = 0;
 float runningAvg = 0;
 
 const int NUM_READINGS = 1000;
@@ -44,7 +45,7 @@ void setup() {
     while(true);
   } 
 
-  Serial.print(F("Firmware version: "));
+  Serial.print(("Firmware version: "));
   Serial.println(WiFi.firmwareVersion());
 
   WiFi.config(ip);
@@ -57,7 +58,7 @@ void setup() {
     status = WiFi.begin(ssid);
 
     // wait 10 seconds for connection:
-    delay(10000);
+    //    delay(10000);
   } 
   server.begin();
   // you're connected now, so print out the status:
@@ -66,37 +67,28 @@ void setup() {
   //Initialize analog reference value to 1.1v for higher
   //resolution and better temp range. 
   analogReference(INTERNAL1V1);
+  getTemp();
+  // Set these averages before we have enough readings
+  avg1sTemp = currTemp;
+  avg10sTemp = currTemp;
 }
 
-
 void loop() {
-
-  if( counter >= NUM_READINGS ) {
-    counter = 0;
-    getAverages();
-  }
-
   // check if we have a client waiting
-  handleClient();
+  handleClient();  
 
   getTemp();
   counter++;
-  delay(8);  
+  if( counter >= NUM_READINGS ) {
+    counter = 0;
+    getAverages();
+  } 
+  delay(1);
 }
-
 
 void getTemp() {
   // Grab analog reading from thermistor
   currTemp = convertToTemp( analogRead( A0 ) ); 
-
-  // Set these averages before we have enough readings
-  if( !avg1sTemp ) {
-    avg1sTemp = currTemp;
-  }
-  if( !avg10sTemp ) {
-    avg10sTemp = currTemp;
-  }
-
   runningAvg += currTemp / NUM_READINGS; 
 }
 
@@ -111,22 +103,26 @@ void getAverages() {
   avg1sTemp = runningAvg;
   runningAvg = 0;
   averagesArray[avgCounter] = avg1sTemp;
+  // increment or reset the counter
+  avgCounter = (avgCounter + 1) % 10;
+  if(!tenReached){
+    tenReached = (avgCounter == 0);
+  }
 
   // getting 10s average
-  avg10sTemp = 0;
-  int i;
-  for( i=0; i < 10; i++ ) {
-    avg10sTemp += averagesArray[i];
-    if( averagesArray[i] == 0 ) break; // break if we have a zero value
+  avg10sTemp = 0;  
+  if(tenReached){
+    for( int i=0; i < 10; i++ ) {
+      avg10sTemp += averagesArray[i];
+    }
+    avg10sTemp /= 10;
   }
-  avg10sTemp /= i;
-
-  // increment or reset the counter
-  if( avgCounter >= 9 ) {
-    avgCounter = 0;
-  } 
-  else {
-    avgCounter++;
+  else{
+    for( int i=0; i < avgCounter; i++ ) {
+      avg10sTemp += averagesArray[i];
+    }
+    if(avgCounter != 0)
+      avg10sTemp /= avgCounter;
   }
 }
 
@@ -147,23 +143,23 @@ void handleClient() {
         // so you can send a reply
         if (c == '\n' && currentLineIsBlank) {
           // send a standard http response header
-           client.println("HTTP/1.1 200 OK");
-           client.println("Content-Type: application/json;charset=utf-8");
-           client.println("Connection: close");  // the connection will be closed after completion of the response
-           client.println();
-           client.print("{");
-           client.print("\"currentTemp\":\"");
-           client.print(currTemp);
-           client.print("\",");
-           client.print("\"avg10Temp\":\"");
-           client.print(avg10sTemp);
-           client.print("\",");
-           client.print("\"avg1Temp\":\"");
-           client.print(avg1sTemp);
-           client.print("\"");
-           client.print("}");
-           client.println();
-           break;
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: application/json;charset=utf-8");
+          client.println("Connection: close");  // the connection will be closed after completion of the response
+          client.println();
+          client.print("{");
+          client.print("\"currentTemp\":\"");
+          client.print(currTemp);
+          client.print("\",");
+          client.print("\"avg10Temp\":\"");
+          client.print(avg10sTemp);
+          client.print("\",");
+          client.print("\"avg1Temp\":\"");
+          client.print(avg1sTemp);
+          client.print("\"");
+          client.print("}");
+          client.println();
+          break;
 
         }
         if (c == '\n') {
@@ -183,6 +179,26 @@ void handleClient() {
     client.stop();
     Serial.println("client disonnected");
   }
+  else{
+    if(counter >= (NUM_READINGS -1)){
+      Serial.println("HTTP/1.1 200 OK");
+      Serial.println("Content-Type: application/json;charset=utf-8");
+      Serial.println("Connection: close");  // the connection will be closed after completion of the response
+      Serial.println();
+      Serial.print("{");
+      Serial.print("\"currentTemp\":\"");
+      Serial.print(currTemp);
+      Serial.print("\",");
+      Serial.print("\"avg10Temp\":\"");
+      Serial.print(avg10sTemp);
+      Serial.print("\",");
+      Serial.print("\"avg1Temp\":\"");
+      Serial.print(avg1sTemp);
+      Serial.print("\"");
+      Serial.print("}");
+      Serial.println();
+    }
+  }
 }
 
 void printWifiStatus() {
@@ -201,3 +217,13 @@ void printWifiStatus() {
   Serial.print(rssi);
   Serial.println(" dBm");
 }
+
+
+
+
+
+
+
+
+
+
