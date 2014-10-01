@@ -14,6 +14,6 @@
     AVAudioPlayer *alarmNoise;
 }
 
-@property (strong, nonatomic) IBOutlet UIButton *attendingPatient;
+@property (strong, nonatomic) IBOutlet UIButton *doneButton;
 
 @end

@@ -16,6 +16,7 @@
 @property (strong, nonatomic) IBOutlet UISegmentedControl *toggle;
 @property (strong, nonatomic) NSTimer *programTimer;
 @property (strong, nonatomic) NSTimer *backgroundTimer;
+@property (strong, nonatomic) IBOutlet UIView *attendingPatient;
 
 
 @end
