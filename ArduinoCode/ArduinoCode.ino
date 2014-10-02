@@ -2,7 +2,7 @@
 #include <WiFi.h>
 
 // the IP address for the shield:
-static IPAddress ip(10, 3, 13, 60);
+static IPAddress ip(10, 3, 13, 88);
 
 char ssid[]  = "EECS";      // your network SSID (name) 
 char pass[]  = "";          // your network password
@@ -179,6 +179,7 @@ void handleClient() {
     client.stop();
     Serial.println("client disonnected");
   }
+  /*
   else{
     if(counter >= (NUM_READINGS -1)){
       Serial.println("HTTP/1.1 200 OK");
@@ -199,6 +200,7 @@ void handleClient() {
       Serial.println();
     }
   }
+  */
 }
 
 void printWifiStatus() {

@@ -32,6 +32,7 @@
 
 bool alarmPlaying    = false; // used to play alarm sound
 bool alarmHasSounded = false; // used to reset alarm once temperature goes below threshold
+NSDictionary *dict   = nil;
 
 /* ========== Functions that deal with user notifications (alarm, alarm sound) ========== */
 /* Generate the Audio Player object for the alarm */
@@ -103,16 +104,6 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
     [alert show];
 }
 
-/*
- - (void) displayAlarmFromBackground: (NSString *) alarmMessage {
- UILocalNotification* localNotification = [[UILocalNotification alloc] init];
- localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:10]; // set alarm off in 10 seconds
- localNotification.alertBody = alarmMessage;
- localNotification.timeZone = [NSTimeZone defaultTimeZone];
- localNotification.repeatCalendar = nil;
- [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
- }*/
-
 /* ========== Background Flashing ========== */
 // Change the transperancy of the background from total to none every call, making a flashing appearance
 - (void) flashBackground: (NSTimer *) timer {
@@ -145,7 +136,7 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
 - (BOOL) tempIsAboveThreshold {
     // if it is currently displaying Fahrenheit
     if (self.toggle.selectedSegmentIndex == 0) {
-        return ([self.CurrentT.text floatValue] >= 90.0);
+        return ([self.CurrentT.text floatValue] >= 85.0);
     }
     // otherwise it is displaying Celsius
     return ([self.CurrentT.text floatValue] >= 32.2);
@@ -186,60 +177,91 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
 }
 
 /* ========== Parse JSON from IP Address ========== */
+/*
 - (NSDictionary *) parseJSONFromHTTP {
     // Make URL request with server
     NSHTTPURLResponse *response = nil;
-    NSString *jsonUrlString     = [NSString stringWithFormat:@"http://10.3.13.60"];
+    NSString *jsonUrlString     = [NSString stringWithFormat:@"http://10.3.13.88"];
     NSURL *url                  = [NSURL URLWithString:[jsonUrlString stringByAddingPercentEscapesUsingEncoding:
                                                         NSUTF8StringEncoding]];
+    
     // Get request and response though URL
     NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url];
     NSData *responseData  = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
     
-    // JSON Parsing
-    NSDictionary *result  = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers
-                                                              error:nil];
-    return result;
+    if (responseData != nil) {
+        // JSON Parsing
+        NSDictionary *result  = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers
+                                                                  error:nil];
+        return result;
+    }
+    return nil;
+}
+ */
+
+- (void) parseData:(NSData *)responseData
+{
+    NSError* error;
+    
+    // NEW in iOS 5: NSJSONSerialization
+    // No more third-party libraries necessary for JSON parsing
+    if (responseData != nil) {
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData
+                                                             options:NSJSONReadingMutableContainers
+                                                               error:&error];
+        dict = json;
+    }
+    else {
+        dict = NULL;
+    }
+}
+
+- (void) JSONRequest {
+
+    // Get my messages; set up URL
+    NSURL *url = [NSURL URLWithString:@"http://10.3.13.88"];
+
+    // Set up a concurrent queue
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+            NSData* data = [NSData dataWithContentsOfURL:url];
+            [self performSelectorOnMainThread:@selector(parseData:)
+                                   withObject:data
+                                waitUntilDone:YES];
+        });
 }
 
 /* ========== The MAIN loop of the program, this function is called every second from viewDidLoad ========== */
 - (void) updateProgram: (NSTimer *) timer {
-    NSDictionary *dict = [self parseJSONFromHTTP];
+//    NSDictionary *dict = [self parseJSONFromHTTP];
     // parse temperatures out of the data dictionary and render to screen
-    [self getTemperatures:dict];
-    if ([self tempIsAboveThreshold] && !alarmHasSounded && self.attendingPatient.hidden == true) {
-        [self displayAlarm: @"High Patient Temperature"];
-        [self soundAlarm];
-        [self flashScreen];
-    }
-    else if (![self tempIsAboveThreshold] && alarmHasSounded){
-        [self resetAlarm];
-    }
-    /* for testing purposes ... */
-    /*
-    if ([self.CurrentT.text floatValue] > 92.0){
-        while ([self.CurrentT.text floatValue] > 88.0) {
-            self.CurrentT.text = [NSString stringWithFormat:@"%0.01f", ([self.CurrentT.text floatValue] - 1)];
+    [self JSONRequest];
+    if (dict) {
+        [self getTemperatures:dict];
+        if ([self tempIsAboveThreshold] && !alarmHasSounded && self.attendingPatient.hidden == true) {
+            [self displayAlarm: @"High Patient Temperature"];
+            [self soundAlarm];
+            [self flashScreen];
+        }
+        else if (![self tempIsAboveThreshold] && alarmHasSounded){
+            [self resetAlarm];
         }
     }
-    else if ([self.CurrentT.text floatValue] < 88.0) {
-        self.CurrentT.text = [NSString stringWithFormat:@"%0.01f", ([self.CurrentT.text floatValue] + 1)];
-    }
-    else {
-        self.CurrentT.text = [NSString stringWithFormat:@"%0.01f", ([self.CurrentT.text floatValue] + 1)];
-    }*/
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // create rounded edges for the UILabel squares on the screen
-    self.CurrentT.layer.cornerRadius = 15;
-    self.Avg1.layer.cornerRadius     = 15;
-    self.Avg10.layer.cornerRadius    = 15;
+    self.Avg1.layer.cornerRadius             = 15;
+    self.Avg10.layer.cornerRadius            = 15;
+    self.CurrentT.layer.cornerRadius         = 15;
+    self.doneButton.layer.cornerRadius       = 15;
+    self.attendingPatient.layer.cornerRadius = 15;
     
     // call the updateProgram function every second
-    self.programTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateProgram:) userInfo:nil repeats:YES];
+    self.programTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(updateProgram:) userInfo:nil
+                                                        repeats:YES];
 }
 
 /*----------------------------------------------------------------------------------*/
@@ -258,6 +280,15 @@ bool alarmHasSounded = false; // used to reset alarm once temperature goes below
  self.myTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateColor:) userInfo:nil repeats:YES];
  }
  */
+/*
+ - (void) displayAlarmFromBackground: (NSString *) alarmMessage {
+ UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+ localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:10]; // set alarm off in 10 seconds
+ localNotification.alertBody = alarmMessage;
+ localNotification.timeZone = [NSTimeZone defaultTimeZone];
+ localNotification.repeatCalendar = nil;
+ [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+ }*/
 
 - (void)didReceiveMemoryWarning
 {
