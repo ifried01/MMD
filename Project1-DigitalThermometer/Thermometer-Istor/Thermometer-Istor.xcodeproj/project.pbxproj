@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC6AEA4319DDA6E60073C80C /* beep_1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BC6AEA4219DDA6E60073C80C /* beep_1.mp3 */; };
 		BC8E65AC19DCF54F007A1B41 /* beep-01.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BC8E65AB19DCF54F007A1B41 /* beep-01.mp3 */; };
 		BCBDEF4619D48EAC005021A6 /* soundImage.png in Resources */ = {isa = PBXBuildFile; fileRef = BCBDEF4519D48EAC005021A6 /* soundImage.png */; };
 		BCBDEF4819D48EB1005021A6 /* muteImage.png in Resources */ = {isa = PBXBuildFile; fileRef = BCBDEF4719D48EB1005021A6 /* muteImage.png */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC6AEA4219DDA6E60073C80C /* beep_1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = beep_1.mp3; sourceTree = "<group>"; };
 		BC8E65AB19DCF54F007A1B41 /* beep-01.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "beep-01.mp3"; sourceTree = "<group>"; };
 		BCBDEF4519D48EAC005021A6 /* soundImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = soundImage.png; sourceTree = "<group>"; };
 		BCBDEF4719D48EB1005021A6 /* muteImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = muteImage.png; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				BCBDEF4519D48EAC005021A6 /* soundImage.png */,
 				BCD1E74619D33A38003E7092 /* iphone_alarm.mp3 */,
 				BC8E65AB19DCF54F007A1B41 /* beep-01.mp3 */,
+				BC6AEA4219DDA6E60073C80C /* beep_1.mp3 */,
 				BCD1E71419D336EB003E7092 /* Thermometer-Istor-Info.plist */,
 				BCD1E71519D336EB003E7092 /* InfoPlist.strings */,
 				BCD1E71819D336EB003E7092 /* main.m */,
@@ -247,6 +250,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC6AEA4319DDA6E60073C80C /* beep_1.mp3 in Resources */,
 				BCD1E72319D336EB003E7092 /* Main_iPad.storyboard in Resources */,
 				BCD1E72819D336EB003E7092 /* Images.xcassets in Resources */,
 				BCBDEF4819D48EB1005021A6 /* muteImage.png in Resources */,

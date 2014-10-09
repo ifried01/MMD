@@ -48,7 +48,7 @@ NSDictionary *dict   = nil;
 }
 
 - (void) soundAlarm {
-    alarmNoise      = [self setupAudioPlayerWithFile:@"iphone_alarm" type:@"mp3"];
+    alarmNoise      = [self setupAudioPlayerWithFile:@"beep_1" type:@"mp3"];
     alarmPlaying    = true;
     alarmHasSounded = true;
     [alarmNoise setVolume:0.3];
