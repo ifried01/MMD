@@ -92,7 +92,7 @@
         return;
     }
     
-    NSArray *recipents = @[@"6507969990", @"6507969990"];
+    NSArray *recipents = @[@"1111111111"];
     NSString *drName   = sender;
     NSString *message  = [NSString stringWithFormat:@"%@ to room 121A", drName];
     
