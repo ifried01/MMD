@@ -1,5 +1,6 @@
 Tufts University - Fall 2014
 CS 50/150 - EE 93/193
+Taught by Ming Chow and Ronald Lasser
 Mobile Medical Devices
 
 Work by Inbar Fried, Emily Quigley, Cody Chen, Michael Nuzzolo, and Andrew Carp 
